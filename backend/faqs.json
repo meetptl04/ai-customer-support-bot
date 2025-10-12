@@ -1,0 +1,18 @@
+[
+  {
+    "question": "What is your return policy?",
+    "answer": "You can return any item within 30 days of purchase for a full refund. The item must be in its original condition with all packaging."
+  },
+  {
+    "question": "How long does shipping take?",
+    "answer": "Standard shipping takes 5-7 business days. We also offer expedited shipping which takes 2-3 business days."
+  },
+  {
+    "question": "Do you ship internationally?",
+    "answer": "Yes, we ship to most countries. International shipping costs and times vary."
+  },
+  {
+    "question": "How can I track my order?",
+    "answer": "Once your order has shipped, you will receive an email with a tracking number and a link to the carrier's website."
+  }
+]

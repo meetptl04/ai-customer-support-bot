@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:13-alpine
+    container_name: support_bot_db
+    environment:
+      - POSTGRES_USER=support_user
+      - POSTGRES_PASSWORD=strongpassword
+      - POSTGRES_DB=support_chat_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
