@@ -68,7 +68,7 @@ A video demonstrating the project's features and functionality is available here
 
 1.  **Clone the repository:**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/meetptl04/ai-customer-support-bot.git
     cd ai_support_bot_backend
     ```
 
