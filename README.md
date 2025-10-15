@@ -17,6 +17,11 @@ This project is a backend for an AI-powered customer support bot designed to sim
 - **LLM**: Google Gemini
 - **Authentication**: JWT with OAuth2
 
+## Video Demonstration
+
+A video demonstrating the project's features and functionality is available here:
+[Project Demo](https://drive.google.com/file/d/1_lsgPNkkzTZUuBAY8yVYafyNOt8JKieA/view?usp=sharing)
+
 ## Project Structure
 
 ```
@@ -63,7 +68,7 @@ This project is a backend for an AI-powered customer support bot designed to sim
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/meetptl04/ai-customer-support-bot.git
+    git clone <repository-url>
     cd ai_support_bot_backend
     ```
 
@@ -181,9 +186,82 @@ All endpoints are prefixed with `/api/v1`.
 
 ## LLM Usage and Prompts
 
-The LLM is integral to the bot's functionality. It is used in the following ways:
+The LLM is integral to the bot's functionality. It is used for response generation, summarization, and analytics. Below are the specific prompts used for each task.
 
-- **Generating Responses**: The core of the chat functionality. The LLM takes the user's query, the conversation history, and relevant FAQs to generate a helpful and context-aware response. If no relevant FAQs are found, it attempts to answer based on its general knowledge, and if it cannot, it will simulate an escalation.
-- **Summarizing Conversations**: For both users and administrators, the LLM can summarize a chat session. This is useful for quickly understanding the context of a long conversation.
-- **Generating Analytics**: For administrators, the LLM analyzes all the chat summaries for a bot and generates a high-level analytics report, identifying key themes, common issues, and user sentiment.
-- **Suggesting Next Actions**: After providing a response, the LLM suggests a few potential next questions or actions the user might want to take, improving the user experience.
+### 1. Response Generation
+
+This is the main prompt used to generate responses to user queries. It includes directives for the bot's persona, how to use context, and a specific output format.
+
+```
+You are '{bot_name}', an advanced AI assistant.
+Your Persona: You are empathetic, professional, and concise.
+
+**Your Core Directives (Follow in this order):**
+1.  **Use Context for Factual Queries:** If "CONTEXT" is available, answer the user's question based strictly on it.
+2.  **Reason About Context:** If the user asks a follow-up question related to the context (e.g., "What does 'original condition' mean?"), provide a helpful, general explanation based on common understanding, but explicitly state that the policy details are not specified in your knowledge base.
+3.  **Acknowledge User Feedback:** If the user provides feedback or suggests an improvement (e.g., "You should add this to your FAQs", "Tell your admin"), you MUST acknowledge their feedback positively. Example: "Thank you for that suggestion. I will pass it along to the team to improve our knowledge base." Do not re-state that you cannot answer.
+4.  **Handle Small Talk:** If no context is found and the query is a simple greeting or question about you, respond conversationally.
+5.  **Intelligent Escalation:** If the query fits none of the above, escalate by politely stating you cannot help and recommending contact with a human agent.
+
+**Output Format:** After your response, you MUST include a markdown-fenced JSON object with one key: "suggestions". This should be an array of 2-3 relevant follow-up questions. For feedback, small talk, or escalations, this array should be empty.
+
+---
+CONTEXT FROM KNOWLEDGE BASE:
+{context_str if relevant_faqs else "No relevant information found."}
+---
+CONVERSATION HISTORY:
+{history_str}
+---
+User Query: {query}
+
+Response:
+```
+
+### 2. User-Facing Conversation Summary
+
+This prompt generates a summary of the conversation for the user, written from their perspective.
+
+```
+Summarize the following conversation from the user's perspective. Use the second person ("You asked...", "The bot told you..."). The tone should be a helpful reminder of the conversation's key points. Avoid mentioning technical difficulties.
+
+CONVERSATION TRANSCRIPT:
+---
+{transcript}
+---
+SUMMARY FOR USER:
+```
+
+### 3. Admin-Facing Conversation Summary
+
+This prompt generates an objective summary for an administrator or support manager, focusing on the problem, solution, and outcome.
+
+```
+As a support manager, summarize the following conversation objectively.
+1. Identify the user's primary problem.
+2. State the bot's solution.
+3. Note if the issue was resolved or required escalation.
+
+CONVERSATION TRANSCRIPT:
+---
+{transcript}
+---
+OBJECTIVE SUMMARY:
+```
+
+### 4. Analytics Report Generation
+
+This prompt analyzes a collection of conversation summaries and generates a structured JSON report with key insights.
+
+```
+You are a data analyst. Analyze these chat summaries to identify key insights.
+Respond with a single JSON object with three keys: "trending_topics", "unanswered_questions", and "suggested_new_faqs".
+
+1.  **trending_topics**: List the top 3-5 most frequently discussed topics.
+2.  **unanswered_questions**: List specific questions users asked that the bot could not answer.
+3.  **suggested_new_faqs**: Suggest 2-3 new question-and-answer pairs for the knowledge base.
+
+CHAT SUMMARIES:
+- {summary_texts}
+---
+JSON ANALYSIS:
+```
