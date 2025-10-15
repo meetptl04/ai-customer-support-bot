@@ -63,7 +63,7 @@ This project is a backend for an AI-powered customer support bot designed to sim
 
 1.  **Clone the repository:**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/meetptl04/ai-customer-support-bot.git
     cd ai_support_bot_backend
     ```
 
@@ -82,38 +82,23 @@ This project is a backend for an AI-powered customer support bot designed to sim
     - Create a file named `.env` in the root directory.
     - Copy the contents of the "Environment Variables" section below into the `.env` file and provide the required values.
 
-### Docker-Based Installation
+### Database Setup with Docker
 
-1.  **Clone the repository:**
+This project uses Docker to run a PostgreSQL database. This is the recommended way to set up the database for local development.
+
+1.  **Start the database:**
     ```bash
-    git clone <repository-url>
-    cd ai_support_bot_backend
+    docker-compose up -d
     ```
-
-2.  **Set up the environment variables:**
-    - Create a file named `.env` in the root directory.
-    - Copy the contents of the "Environment Variables" section below into the `.env` file and provide the required values.
-
-3.  **Build and run the application using Docker Compose:**
-    ```bash
-    docker-compose up --build
-    ```
+    This will start a PostgreSQL container in the background and expose it on port 5432. The database credentials are set in the `docker-compose.yml` file and should be used to construct the `DATABASE_URL` in your `.env` file.
 
 ## Running the Application
 
-### Manual
-
-If you followed the manual installation, you can run the application using `uvicorn`:
+Once you have completed the installation steps and started the database, you can run the application:
 
 ```bash
 uvicorn app.main:app --reload
 ```
-
-The application will be available at `http://127.0.0.1:8000`.
-
-### Docker
-
-If you are using Docker, the application will start automatically after the `docker-compose up --build` command completes.
 
 The application will be available at `http://127.0.0.1:8000`.
 
